@@ -4,6 +4,7 @@ package com.SaaS_Based_Customer_Relationship_Management.CRM.service_provider_int
 import com.SaaS_Based_Customer_Relationship_Management.CRM.dtos.CreateSalesDataDTO;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.dtos.SalesDataResponseDTO;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.dtos.UpdateSalesDataDTO;
+import com.SaaS_Based_Customer_Relationship_Management.CRM.entities.SalesData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,7 +24,7 @@ public interface SalesDataService {
 
     SalesDataResponseDTO updateSalesData(Long id, UpdateSalesDataDTO updateSalesDataDTO);
 
-    void deleteSalesData(Long id);
+    void deleteSalesData(SalesData salesData);
 
     void deactivateSalesData(Long id);
 }
