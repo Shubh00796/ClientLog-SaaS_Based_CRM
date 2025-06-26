@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "sales_data", indexes = {
@@ -29,6 +31,7 @@ public class SalesData {
     private String productName;
 
     @NotNull(message = "Quantity is required")
+    @Column(nullable = false)
     private Integer quantity;
 
     @NotNull(message = "CustomerId is required")
@@ -38,5 +41,13 @@ public class SalesData {
     @NotNull(message = "TenantId is required")
     @Column(name = "tenant_id", nullable = false)
     private Long tenantId;
-}
 
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
