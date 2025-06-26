@@ -5,6 +5,8 @@ import com.SaaS_Based_Customer_Relationship_Management.CRM.entities.Customer;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.exceptions.ResourceNotFoundException;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.reposiotries.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,8 +22,12 @@ public class CustomerRepoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + id));
     }
 
-    public List<Customer> findByTenantId(Long tenantId) {
-        return customerRepository.findByTenantIdAndIsActiveTrue(tenantId);
+    public List<Customer> findByTenantId(Long id) {
+        return customerRepository.findByTenantId(id);
+    }
+
+    public Page<Customer> findByTenantIdPagable(Long tenantId, Pageable pageable) {
+        return customerRepository.findByTenantIdAndIsActiveTrue(tenantId, pageable);
     }
 
     public List<Customer> searchByName(String name, Long tenantId) {
@@ -47,5 +53,9 @@ public class CustomerRepoService {
 
     public List<Customer> findAll() {
         return customerRepository.findAll();
+    }
+
+    public boolean existsByEmailAndTenant(Long tenantId, String email) {
+        return customerRepository.existsByEmailAndTenantId(email, tenantId);
     }
 }

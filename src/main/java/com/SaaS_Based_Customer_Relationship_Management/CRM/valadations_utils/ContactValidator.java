@@ -45,5 +45,6 @@ public class ContactValidator {
 
     private void validateCustomerExists(Long customerId) {
         customerRepoService.findById(customerId); // throws if not found
+        Objects.requireNonNull(customerId, "You canr create the contact if the customer is not present");
     }
 }

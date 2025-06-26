@@ -26,7 +26,6 @@ public class CustomerValidator {
     public void validateCreateRequest(CreateCustomerDTO dto) {
         Objects.requireNonNull(dto, "CreateCustomerDTO cannot be null");
         validateJsrViolations(dto);
-        validateEmailUniqueness(dto.getEmail(), dto.getTenantId());
     }
 
     public void validateUpdateRequest(Long customerId, UpdateCustomerDTO dto) {
@@ -42,8 +41,4 @@ public class CustomerValidator {
         }
     }
 
-    private void validateEmailUniqueness(String email, Long tenantId) {
-        Customer customerRepoServiceByEmailAndTenantId = customerRepoService.findByEmailAndTenantId(email, tenantId);
-        Objects.requireNonNull(customerRepoServiceByEmailAndTenantId, "email and id can not be null");
-    }
 }

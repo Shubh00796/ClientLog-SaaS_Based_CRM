@@ -9,64 +9,91 @@ import com.SaaS_Based_Customer_Relationship_Management.CRM.mappers.CustomerMappe
 import com.SaaS_Based_Customer_Relationship_Management.CRM.service_provider_interface.CustomerService;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.valadations_utils.CustomerValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
+
     private final CustomerRepoService repoService;
     private final CustomerMapper mapper;
     private final CustomerValidator customerValidator;
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public CustomerResponseDTO createCustomer(CreateCustomerDTO createCustomerDTO) {
         customerValidator.validateCreateRequest(createCustomerDTO);
         Customer customer = mapper.toEntity(createCustomerDTO);
         customer.setCreatedAt(LocalDateTime.now());
-
-        return mapper.toDto(repoService.save(customer));
+        return mapAndSave(customer);
     }
 
     @Override
+    @Cacheable(value = "customers", key = "#id")
     public CustomerResponseDTO getCustomerById(Long id) {
-        return null;
+        return map(repoService.findById(id));
     }
 
     @Override
     public Page<CustomerResponseDTO> getCustomersByTenantId(Long tenantId, Pageable pageable) {
-        return null;
+        return repoService.findByTenantIdPagable(tenantId, pageable)
+                .map(mapper::toDto);
     }
 
     @Override
     public List<CustomerResponseDTO> searchCustomersByName(String name, Long tenantId) {
-        return List.of();
+        return repoService.searchByName(name, tenantId)
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public CustomerResponseDTO updateCustomer(Long id, UpdateCustomerDTO updateCustomerDTO) {
-        return null;
+        customerValidator.validateUpdateRequest(id, updateCustomerDTO);
+        Customer customer = repoService.findById(id);
+        mapper.updateEntity(customer, updateCustomerDTO);
+        customer.setUpdatedAt(LocalDateTime.now());
+        return mapAndSave(customer);
     }
 
     @Override
-    public void deleteCustomer(Long id) {
-
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void deleteCustomer(Customer customer) {
+        repoService.delete(customer);
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deactivateCustomer(Long id) {
-
+        Customer customer = repoService.findById(id);
+        customer.setIsActive(false);
+        customer.setUpdatedAt(LocalDateTime.now());
+        repoService.update(customer);
     }
 
     @Override
     public boolean existsByEmailAndTenantId(String email, Long tenantId) {
-        return false;
+        return repoService.existsByEmailAndTenant(tenantId, email);
+    }
+
+    // 🔽 Private helper methods
+
+    private CustomerResponseDTO map(Customer customer) {
+        return mapper.toDto(customer);
+    }
+
+    private CustomerResponseDTO mapAndSave(Customer customer) {
+        return mapper.toDto(repoService.save(customer));
     }
 }

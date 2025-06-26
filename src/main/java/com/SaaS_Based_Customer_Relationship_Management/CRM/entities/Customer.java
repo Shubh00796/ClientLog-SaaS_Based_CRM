@@ -29,7 +29,6 @@ public class Customer {
     private String name;
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
