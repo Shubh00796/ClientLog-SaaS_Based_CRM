@@ -4,6 +4,8 @@ import com.SaaS_Based_Customer_Relationship_Management.CRM.entities.SalesData;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.exceptions.ResourceNotFoundException;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.reposiotries.SalesDataRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,8 @@ public class SalesDataRepoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Sales data not found with ID: " + id));
     }
 
-    public List<SalesData> findByTenantId(Long tenantId) {
-        return salesDataRepository.findByTenantIdAndIsActiveTrue(tenantId);
+    public Page<SalesData> findByTenantId(Long tenantId, Pageable pageable) {
+        return salesDataRepository.findByTenantIdAndIsActiveTrue(tenantId, pageable);
     }
 
     public List<SalesData> searchByProductName(String productName, Long tenantId) {
