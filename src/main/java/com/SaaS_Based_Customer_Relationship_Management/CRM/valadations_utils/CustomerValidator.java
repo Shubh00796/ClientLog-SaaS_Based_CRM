@@ -3,7 +3,6 @@ package com.SaaS_Based_Customer_Relationship_Management.CRM.valadations_utils;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.data_access_layer.CustomerRepoService;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.dtos.CreateCustomerDTO;
 import com.SaaS_Based_Customer_Relationship_Management.CRM.dtos.UpdateCustomerDTO;
-import com.SaaS_Based_Customer_Relationship_Management.CRM.entities.Customer;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
