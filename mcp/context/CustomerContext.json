@@ -1,0 +1,12 @@
+{
+    "name": "CustomerContext",
+    "description": "Represents a customer record in the CRM system.",
+    "fields": {
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "company": "string",
+      "status": "string"
+    }
+  }
+  
